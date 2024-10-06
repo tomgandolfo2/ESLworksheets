@@ -16,7 +16,7 @@ export const authOptions = {
     strategy: "jwt", // Using JWT for session strategy
   },
   callbacks: {
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       if (session?.user) {
         session.user.role = token.role; // Store the role in the session token
         session.user.id = token.sub; // Add the user ID to the session from the token
