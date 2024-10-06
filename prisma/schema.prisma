@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Worksheet {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  fileUrl     String
+  level       String
+  skill       String
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  downloads   DownloadHistory[]
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  name          String?
+  email         String   @unique
+  emailVerified DateTime?
+  image         String?
+  role          String   @default("user") // User role: admin or user
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  downloads     DownloadHistory[]
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             Int
+  provider           String
+  providerAccountId  String
+  type               String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String @unique
+  expires    DateTime
+}
+
+model DownloadHistory {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  worksheetId Int
+  downloadedAt DateTime @default(now())
+  rating      Int?      // Add rating for 1-5 star rating (nullable)
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  worksheet   Worksheet @relation(fields: [worksheetId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, worksheetId]) // Ensure each user can only have one download entry per worksheet
+}
