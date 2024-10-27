@@ -22,9 +22,6 @@ export const authOptions = {
   },
   callbacks: {
     async session({ session, token }) {
-      console.log("Session callback called with session:", session);
-      console.log("Session callback called with token:", token);
-
       if (session?.user) {
         session.user.role = token.role; // Store the role in the session token
         session.user.id = token.sub; // Add the user ID to the session from the token
@@ -32,9 +29,7 @@ export const authOptions = {
       return session;
     },
     async jwt({ token, user }) {
-      console.log("JWT callback called with token:", token);
       if (user) {
-        console.log("User found in JWT callback:", user);
         token.role = user.role; // Store role in the token when the user signs in
         token.sub = user.id; // Store user ID in the token
       }
@@ -47,7 +42,7 @@ export const authOptions = {
       options: {
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax", // `lax` in development
+        sameSite: "lax", // Set to 'lax' for compatibility with third-party contexts
         path: "/",
       },
     },
@@ -56,7 +51,7 @@ export const authOptions = {
       options: {
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax", // `lax` in development
+        sameSite: "lax", // Set to 'lax' for compatibility with third-party contexts
         path: "/",
       },
     },
