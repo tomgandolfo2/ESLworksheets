@@ -40,18 +40,18 @@ export const authOptions = {
     csrfToken: {
       name: "csrfToken",
       options: {
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         httpOnly: true,
-        sameSite: "lax", // Set to 'lax' for compatibility with third-party contexts
+        sameSite: "none", // Set to 'none' for cross-site requests
         path: "/",
       },
     },
     state: {
-      name: "oauth_state", // Ensure the `state` cookie has a distinct name
+      name: "oauth_state",
       options: {
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         httpOnly: true,
-        sameSite: "lax", // Set to 'lax' for compatibility with third-party contexts
+        sameSite: "none", // Set to 'none' for cross-site requests
         path: "/",
       },
     },
