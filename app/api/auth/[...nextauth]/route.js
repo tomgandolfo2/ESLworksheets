@@ -23,6 +23,13 @@ export const authOptions = {
       }
       return token;
     },
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user.role = token.role; // Add the role to the session
+        session.user.id = token.sub; // Add the user ID to the session
+      }
+      return session;
+    },
   },
   debug: true, // Enable debugging for detailed logs
 };
