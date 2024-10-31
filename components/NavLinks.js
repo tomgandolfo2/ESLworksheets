@@ -66,6 +66,14 @@ export default function NavLinks() {
           Contact
         </Link>
 
+        {/* User info */}
+        {session && (
+          <div className="text-white ml-4">
+            <p>User ID: {session.user.id}</p>
+            <p>User Role: {session.user.role}</p>
+          </div>
+        )}
+
         {/* Sign In/Sign Out button for large screens */}
         <div className="ml-4">
           {session ? (
@@ -124,6 +132,14 @@ export default function NavLinks() {
           >
             Contact
           </Link>
+
+          {/* User info in the mobile menu */}
+          {session && (
+            <div className="text-black text-center mt-2">
+              <p>User ID: {session.user.id}</p>
+              <p>User Role: {session.user.role}</p>
+            </div>
+          )}
 
           {/* Sign In/Sign Out button (ONLY in mobile menu) */}
           <div className="mt-4">
