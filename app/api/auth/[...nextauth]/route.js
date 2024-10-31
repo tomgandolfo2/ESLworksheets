@@ -13,9 +13,18 @@ export const authOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // Using JWT for session strategy
   },
-  debug: true,
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role; // Store role in the token when the user signs in
+        token.sub = user.id; // Store user ID in the token
+      }
+      return token;
+    },
+  },
+  debug: true, // Enable debugging for detailed logs
 };
 
 const handler = NextAuth(authOptions);
