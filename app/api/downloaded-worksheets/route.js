@@ -1,3 +1,7 @@
+// /app/api/downloaded-worksheets/route.js
+
+export const dynamic = "force-dynamic";
+
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
