@@ -5,6 +5,7 @@ import NavLinks from "@/components/NavLinks";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export const metadata = {
   title: "ESL Worksheet Hub",
@@ -96,6 +97,11 @@ export default function RootLayout({ children }) {
           pauseOnHover
           theme="colored"
         />
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics
+            measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
+          />
+        )}
       </body>
     </html>
   );
