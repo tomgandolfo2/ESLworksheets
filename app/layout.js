@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import Script from "next/script";
 
 export const metadata = {
   title: "ESL Worksheet Hub",
@@ -102,6 +103,15 @@ export default function RootLayout({ children }) {
             measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
           />
         )}
+        {/* Consent Manager Script */}
+        <Script
+          src="https://cdn.consentmanager.net/delivery/autoblocking/350cc67e21e65.js"
+          data-cmp-ab="1"
+          data-cmp-host="a.delivery.consentmanager.net"
+          data-cmp-cdn="cdn.consentmanager.net"
+          data-cmp-codesrc="16"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
