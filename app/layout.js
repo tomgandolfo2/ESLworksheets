@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Add this to make the file a Client Component
 
 import ClientProvider from "@/components/ClientProvider";
 import NavLinks from "@/components/NavLinks"; // NavLinks will include the mobile menu logic
@@ -11,11 +11,6 @@ import Script from "next/script"; // Import Script from Next.js
 
 // Use the Tracking ID from environment variables
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
-
-export const metadata = {
-  title: "ESL Worksheet Website",
-  description: "A platform to upload and browse ESL worksheets",
-};
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
