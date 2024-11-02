@@ -1,3 +1,5 @@
+"use client";
+
 import ClientProvider from "@/components/ClientProvider";
 import NavLinks from "@/components/NavLinks"; // NavLinks will include the mobile menu logic
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
