@@ -22,7 +22,7 @@ export const metadata = {
     title: "ESL Worksheet Hub",
     description:
       "Upload, download, and browse ESL worksheets for English learners.",
-    url: "https://www.your-website.com",
+    url: "https://eslworksheets.vercel.app/",
     siteName: "ESL Worksheet Hub",
     images: [
       {
@@ -48,7 +48,7 @@ export const metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://www.your-website.com",
+    canonical: "https://eslworksheets.vercel.app/",
   },
 };
 
