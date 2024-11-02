@@ -44,15 +44,10 @@ export const metadata = {
       "Upload, download, and browse ESL worksheets for English learners.",
     images: ["/path-to-your-image.jpg"],
   },
-  viewport: "width=device-width, initial-scale=1",
-  robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: {
-    canonical: "https://eslworksheets.vercel.app/",
-  },
+  // Moved viewport to a separate export to fix the error
 };
+
+export const viewport = "width=device-width, initial-scale=1";
 
 export default function RootLayout({ children }) {
   return (
