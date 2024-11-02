@@ -1,11 +1,18 @@
+// app/worksheets/WorksheetsClient.js
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  Suspense,
+} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 
-const Worksheets = ({ initialWorksheets = [] }) => {
+const WorksheetsComponent = ({ initialWorksheets = [] }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
@@ -26,7 +33,7 @@ const Worksheets = ({ initialWorksheets = [] }) => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [error, setError] = useState(false); // Add error handling state
+  const [error, setError] = useState(false);
   const [selectedWorksheet, setSelectedWorksheet] = useState(null);
   const [ratingsData, setRatingsData] = useState({});
   const observerRef = useRef(null);
@@ -39,39 +46,49 @@ const Worksheets = ({ initialWorksheets = [] }) => {
     setSearchQuery(appliedSearch);
     setPage(1); // Reset page when filters change
     fetchWorksheets(1); // Refetch when filters change
-  }, [appliedLevel, appliedSkill, appliedSearch]);
+  }, [appliedLevel, appliedSkill, appliedSearch, fetchWorksheets]);
 
   // Fetch worksheets based on filters
-  const fetchWorksheets = async (pageNum) => {
-    try {
-      setLoading(true);
-      setError(false);
-      const response = await fetch(
-        `/api/worksheets?level=${pendingLevel || selectedLevel}&skill=${
-          pendingSkill || selectedSkill
-        }&search=${pendingSearch || searchQuery}&limit=10&offset=${
-          (pageNum - 1) * 10
-        }`
-      );
+  const fetchWorksheets = useCallback(
+    async (pageNum) => {
+      try {
+        setLoading(true);
+        setError(false);
+        const response = await fetch(
+          `/api/worksheets?level=${pendingLevel || selectedLevel}&skill=${
+            pendingSkill || selectedSkill
+          }&search=${pendingSearch || searchQuery}&limit=10&offset=${
+            (pageNum - 1) * 10
+          }`
+        );
 
-      if (!response.ok) throw new Error("Failed to load worksheets.");
+        if (!response.ok) throw new Error("Failed to load worksheets.");
 
-      const { worksheets: newWorksheets } = await response.json();
+        const { worksheets: newWorksheets } = await response.json();
 
-      if (pageNum === 1) {
-        setWorksheets(newWorksheets);
-        setHasMore(newWorksheets.length > 0);
-      } else {
-        setWorksheets((prev) => [...prev, ...newWorksheets]);
-        setHasMore(newWorksheets.length > 0);
+        if (pageNum === 1) {
+          setWorksheets(newWorksheets);
+          setHasMore(newWorksheets.length > 0);
+        } else {
+          setWorksheets((prev) => [...prev, ...newWorksheets]);
+          setHasMore(newWorksheets.length > 0);
+        }
+      } catch (error) {
+        console.error("Error fetching worksheets:", error);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching worksheets:", error);
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [
+      pendingLevel,
+      pendingSkill,
+      pendingSearch,
+      selectedLevel,
+      selectedSkill,
+      searchQuery,
+    ]
+  );
 
   // Infinite scroll trigger
   useEffect(() => {
@@ -90,7 +107,7 @@ const Worksheets = ({ initialWorksheets = [] }) => {
     return () => {
       if (observerRef.current) observer.unobserve(observerRef.current);
     };
-  }, [loading, hasMore]);
+  }, [loading, hasMore, page, fetchWorksheets]);
 
   // Fetch ratings on initial render
   useEffect(() => {
@@ -129,7 +146,7 @@ const Worksheets = ({ initialWorksheets = [] }) => {
     setSearchQuery(pendingSearch);
     setPage(1);
     fetchWorksheets(1);
-  }, [pendingLevel, pendingSkill, pendingSearch, router]);
+  }, [pendingLevel, pendingSkill, pendingSearch, router, fetchWorksheets]);
 
   // Debounce search input to avoid excessive API calls
   const handleSearchChange = (e) => {
@@ -350,5 +367,12 @@ const Worksheets = ({ initialWorksheets = [] }) => {
     </div>
   );
 };
+
+// Wrap with Suspense
+const Worksheets = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <WorksheetsComponent />
+  </Suspense>
+);
 
 export default Worksheets;
