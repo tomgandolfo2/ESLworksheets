@@ -3,6 +3,12 @@ import NavLinks from "@/components/NavLinks"; // NavLinks will include the mobil
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import toast styles
 import "./globals.css"; // Global styles
+import { useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import Script from "next/script"; // Import Script from Next.js
+
+// Use the Tracking ID from environment variables
+const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
 
 export const metadata = {
   title: "ESL Worksheet Website",
@@ -10,6 +16,19 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Track page views when the route changes
+  useEffect(() => {
+    const url = `${pathname}${
+      searchParams.toString() ? `?${searchParams}` : ""
+    }`;
+    if (window.gtag) {
+      window.gtag("config", GA_TRACKING_ID, { page_path: url });
+    }
+  }, [pathname, searchParams]);
+
   return (
     <html lang="en">
       <head>
@@ -57,6 +76,29 @@ export default function RootLayout({ children }) {
 
         {/* Canonical URL */}
         <link rel="canonical" href="https://www.your-website.com" />
+
+        {/* Google Analytics Script */}
+        {GA_TRACKING_ID && (
+          <>
+            <Script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script
+              id="google-analytics"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_TRACKING_ID}');
+                `,
+              }}
+            />
+          </>
+        )}
 
         <title>ESL Worksheet Website</title>
       </head>
